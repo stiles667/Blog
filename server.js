@@ -1,98 +1,48 @@
 const express = require("express");
 const app = express();
-require("dotenv").config();
-const mariadb = require("mariadb");
-let cors = require("cors");
-const session = require('express-session');
-const bcrypt = require('bcrypt');
-const pool = require('./db');
-const PORT = process.env.PORT || 3000;
+const mariadb = require('mariadb');
+const cors = require('cors');
+// require('dotenv').config();
 
 app.use(cors());
 app.use(express.json());
 
-// Configuration de la session
-app.use(session({
-    secret: 'votre_secret',
-    resave: true,
-    saveUninitialized: true
-}));
+const pool = mariadb.createPool({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PWD,
+    database: process.env.DB_DTB,
+});
 
-// Middleware d'authentification de session
-function authenticateSession(req, res, next) {
-    if (req.session.userId) {
-        return next();
-    } else {
-        return res.status(401).json({ message: 'Accès non autorisé' });
-    }
-}
-
-// Route pour l'inscription d'un utilisateur
-app.post('/register', async (req, res) => {
+// Endpoint pour récupérer les données de la table "Articles"
+app.get("/api/articles", async (req, res) => {
+    let conn;
     try {
-        const { email, password, firstName, lastName } = req.body;
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        const result = await pool.query(
-            `INSERT INTO users (email, password, firstName, lastName) VALUES (?, ?, ?, ?)`,
-            [email, hashedPassword, firstName, lastName]
-        );
-
-        res.status(201).json({ message: 'Utilisateur enregistré avec succès' });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Erreur lors de l\'enregistrement de l\'utilisateur' });
+        conn = await pool.getConnection();
+        const rows = await conn.query("SELECT * FROM articles");
+        res.status(200).json(rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    } finally {
+        if (conn) conn.release();
     }
 });
 
-// Route pour la connexion d'un utilisateur
-app.post('/login', async (req, res) => {
+// Endpoint pour récupérer les données de la table "Utilisateurs"
+app.get("/api/users", async (req, res) => {
+    let conn;
     try {
-        const { email, password } = req.body;
-
-        const user = await pool.query(
-            `SELECT * FROM users WHERE email = ?`,
-            [email]
-        );
-
-        if (!user) {
-            return res.status(401).json({ message: 'Adresse e-mail ou mot de passe incorrect' });
-        }
-
-        const passwordMatch = await bcrypt.compare(password, user.password);
-
-        if (!passwordMatch) {
-            return res.status(401).json({ message: 'Adresse e-mail ou mot de passe incorrect' });
-        }
-
-        req.session.userId = user.id;
-
-        res.json({ message: 'Utilisateur connecté avec succès' });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Erreur lors de la connexion de l\'utilisateur' });
+        conn = await pool.getConnection();
+        const rows = await conn.query("SELECT * FROM users");
+        res.status(200).json(rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    } finally {
+        if (conn) conn.release();
     }
 });
-
-// Route pour la création d'un article de blog par un utilisateur connecté
-app.post('/articles', authenticateSession, async (req, res) => {
-    try {
-        const { title, content, author_id } = req.body;
-
-        const result = await pool.query(
-            `INSERT INTO articles (title, content, author_id) VALUES (?, ?, ?)`,
-            [title, content, author_id]
-        );
-
-        res.status(201).json({ message: 'Article créé avec succès' });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Erreur lors de la création de l\'article' });
-    }
-});
-
-// Autres routes CRUD pour les articles...
-
-app.listen(PORT, () => {
-    console.log(`Serveur en cours d'exécution sur le port ${PORT}`);
+app.listen(3001, () => {
+    console.log("Server is running on port 3001");
 });
