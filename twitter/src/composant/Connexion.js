@@ -1,46 +1,80 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+// import './Connexion.css';
 
-const Login = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+function Connexion() {
+  const [formData, setFormData] = useState({
+    Email: "",
+    MotDePasse: "",
+  });
 
-    const handleLogin = (e) => {
-        e.preventDefault();
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [error, setError] = useState(""); // State pour gérer les erreurs
+  const navigate = useNavigate();
 
-        const user = {
-            email: email,
-            password: password,
-        };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-        axios.post('http://localhost:3002/api/login', user)
-            .then(res => {
-                // Handle successful login
-                console.log(res.data);
-            })
-            .catch(error => {
-                // Handle login error
-                console.error(error.response.data);
-            });
-    };
+    try {
+      const response = await fetch("http://localhost:3001/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-    return (
-        <div>
-            <h2>Connexion</h2>
+      if (response.ok) {
+        console.log("Login successful");
+        setLoggedIn(true);
+        navigate("/Accueil"); // Redirige vers la page Accueil
+      } else {
+        setError("Identifiants incorrects"); // Définit le message d'erreur
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
-            <form onSubmit={handleLogin}>
-                <label>
-                    Email:
-                    <input type="text" name="email" onChange={(e) => setEmail(e.target.value)} />
-                </label>
-                <label>
-                    Mot de passe:
-                    <input type="password" name="password" onChange={(e) => setPassword(e.target.value)} />
-                </label>
-                <button type="submit">Se connecter</button>
-            </form>
-        </div>
-    );
-};
+  const handleInput = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
 
-export default Login;
+  return (
+    <div>
+      {loggedIn ? (
+        <Link to="/Accueil" />
+      ) : (
+        <>
+          <h1>Connexion</h1>
+          <form onSubmit={handleSubmit}>
+            <label>Email:</label>
+            <input
+              type="email"
+              name="Email"
+              value={formData.Email}
+              onChange={handleInput}
+            />
+
+            <label>Mot de passe:</label>
+            <input
+              type="password"
+              name="MotDePasse"
+              value={formData.MotDePasse}
+              onChange={handleInput}
+            />
+
+            <button type="submit">Se connecter</button>
+            {error && <p style={{ color: "red" }}>{error}</p>}
+          </form>
+          pas de comptes ? <Link to="/">S'inscrire</Link>
+        </>
+      )}
+    </div>
+  );
+}
+export default Connexion;

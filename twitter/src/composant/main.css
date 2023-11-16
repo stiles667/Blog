@@ -10,9 +10,16 @@ font-family: 'PT Serif', serif;
 body {
   background-color: rgb(255, 255, 255);
   color:rgb(0, 0, 0) ;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+
+
 }
 header {
-  background-color: #000000;
   border-bottom: 1px solid #eee;
   height: 90px;
   width: 100%;
@@ -21,75 +28,14 @@ header {
   left: 0;
   z-index: 100;
 }
-.input-container {
-  position: relative;
+
+container{
+  margin-top: 100px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+  border-radius: 5px;
+  padding: 20px;
+  width: 200px;
+  
+  
 }
-
-.input {
-  font-size: 1em;
-  padding: 0.6em 1em;
-  border: none;
-  border-radius: 6px;
-  background-color: #f8f8f8;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  max-width: 200px;
-  color: #333;
-}
-
-.input:hover {
-  background-color: #f2f2f2;
-}
-
-.input:focus {
-  outline: none;
-  background-color: #fff;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.input::placeholder {
-  color: #999;
-}
-
-.highlight {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background-color: #6c63ff;
-  transition: width 0.3s ease;
-}
-
-.input:focus + .highlight {
-  width: 100%;
-}
-
-/* Optional: Animation on focus */
-@keyframes input-focus {
-  from {
-    transform: scale(1);
-    box-shadow: 0 0 0 rgba(0, 0, 0, 0.1);
-  }
-
-  to {
-    transform: scale(1.02);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-}
-
-.input:focus {
-  animation: input-focus 0.3s ease;
-}
-/* main.css */
-
-.success-message {
-  color: green;
-  margin-top: 10px;
-}
-
-.error-message {
-  color: red;
-  margin-top: 10px;
-}
-

@@ -131,25 +131,34 @@ app.delete("/api/articles/:id", async (req, res) => {
     }
 });
 app.post("/api/login", async (req, res) => {
+    const { email, password } = req.body;
     let conn;
-    console.log(req.body);
+  
     try {
-        conn = await pool.getConnection();
-        const rows = await conn.query("SELECT * FROM users where email = ? AND password = ?", [req.body.email, req.body.password]);
-        console.log(rows);
-
-        if (rows.length === 1) {
-            res.status(200).json({ message: 'Login successful', user: rows[0] });
+      conn = await pool.getConnection();
+  
+      const query = "SELECT * FROM users WHERE email = ?";
+  
+      const result = await conn.query(query, [email]);
+  
+      if (result.length > 0) {
+        const user = result[0];
+        // Vérification du mot de passe - à remplacer par du hachage et de la vérification de mot de passe sécurisés
+        if (user.password === password) {
+          res.status(200).json({ message: 'Login successful' });
         } else {
-            res.status(401).json({ message: 'Invalid credentials' });
+          res.status(401).json({ error: 'Invalid credentials' });
         }
+      } else {
+        res.status(401).json({ error: 'Invalid credentials' });
+      }
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Internal Server Error' });
+      console.error(err);
+      res.status(500).json({ error: 'Internal Server Error' });
     } finally {
-        if (conn) conn.release();
+      if (conn) conn.release();
     }
-});
+  })
 app.listen(3002, () => {
     console.log("Server is running on port 3002");
 });

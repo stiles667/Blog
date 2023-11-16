@@ -4,7 +4,7 @@ import "./main.css";
 
 export default function INSCRIPTION() {
   const [email, setemail] = useState("");
-     const [password, setpassword] = useState("");
+  const [password, setpassword] = useState("");
   const [firstName, setfirstName] = useState("");
   const [lastName, setlastName] = useState("");
 
@@ -34,15 +34,15 @@ export default function INSCRIPTION() {
         error.response.data.message === "Email already used"
       ) {
         alert("Email déjà utilisé");
-      } else {        alert("Inscription réussie");
-
+      } else {
+        alert("Inscription échouée");
       }
     }
   };
 
   return (
     <div>
-      <div className="container">
+      <header>
         <div className="logo">
           <svg
             id="logo-30"
@@ -119,65 +119,65 @@ export default function INSCRIPTION() {
               fill="#4C28B5"
             ></path>{" "}
           </svg>
-          <h1> INSCRIPTION</h1>
         </div>
+      </header>
+      <container>
+        <h1>INSCRIPTION</h1>
 
-        <div className="input-container">
-          <div className="input-container">
-            <h2>
-              <label htmlFor="firstName">First Name</label>
-              <input
-                type="text"
-                name="firstName"
-                id="firstName"
-                placeholder="First Name"
-                required
-                value={firstName}
-                onChange={(e) => setfirstName(e.target.value)}
-              />
-            </h2>
-            <h2>
-              <label htmlFor="lastName">Last Name</label>
-              <input
-                type="text"
-                name="lastName"
-                id="lastName"
-                placeholder="Last Name"
-                required
-                value={lastName}
-                onChange={(e) => setlastName(e.target.value)}
-              />
-            </h2>
-            <h2>
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                name="email"
-                id="email"
-                placeholder="Email"
-                required
-                value={email}
-                onChange={(e) => setemail(e.target.value)}
-              />
-            </h2>
-            <h2>
-              <label htmlFor="password">Password</label>
-              <input
-                type="password"
-                name="password"
-                id="password"
-                placeholder="Password"
-                required
-                value={password}
-                onChange={(e) => setpassword(e.target.value)}
-              />
-            </h2>
-            <button type="submit" onClick={handleSubmit}>
-              S'inscrire
-            </button>
+        <div className="form-container">
+          <div className="form-group">
+            <label htmlFor="firstName">First Name</label>
+            <input
+              type="text"
+              name="firstName"
+              id="firstName"
+              placeholder="First Name"
+              required
+              value={firstName}
+              onChange={(e) => setfirstName(e.target.value)}
+            />
           </div>
+          <div className="form-group">
+            <label htmlFor="lastName">Last Name</label>
+            <input
+              type="text"
+              name="lastName"
+              id="lastName"
+              placeholder="Last Name"
+              required
+              value={lastName}
+              onChange={(e) => setlastName(e.target.value)}
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              name="email"
+              id="email"
+              placeholder="Email"
+              required
+              value={email}
+              onChange={(e) => setemail(e.target.value)}
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              name="password"
+              id="password"
+              placeholder="Password"
+              required
+              value={password}
+              onChange={(e) => setpassword(e.target.value)}
+            />
+          </div>
+          <button type="submit" onClick={handleSubmit}>
+            S'inscrire
+          </button>
         </div>
-      </div>
+      </container>
     </div>
   );
 }
