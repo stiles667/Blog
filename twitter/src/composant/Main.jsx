@@ -4,7 +4,7 @@ import "./main.css";
 
 export default function INSCRIPTION() {
   const [email, setemail] = useState("");
-  const [password, setpassword] = useState("");
+     const [password, setpassword] = useState("");
   const [firstName, setfirstName] = useState("");
   const [lastName, setlastName] = useState("");
 
